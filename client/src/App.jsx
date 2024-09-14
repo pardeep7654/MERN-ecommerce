@@ -1,34 +1,39 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Route, Routes } from "react-router-dom"
+import AuthLayout from "./components/auth/Layout"
+import Login from "./pages/auth/Login"
+import Register from "./pages/auth/Register"
+import Header from "./components/admin-view/Header"
+import AdminLayout from "./components/admin-view/Layout"
+import AdminDashboard from "./pages/admin-view/dashboard"
+import AdminOrders from "./pages/admin-view/Orders"
+import AdminFeatures from "./pages/admin-view/features"
+import AdminProducts from "./pages/admin-view/Products"
+
+ 
 
 function App() {
-  const [count, setCount] = useState(0)
+   
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+     <div className="flex flex-col overflow-hidden bg-white">
+      <h1>Header element</h1>
+
+      <Routes>
+        <Route path="/auth" element={<AuthLayout/>}>
+        <Route path="login" element={<Login/>}></Route>
+        <Route path="register" element={<Register/>}></Route>
+        </Route>
+        <Route path="/admin" element={<AdminLayout/>}>
+      <Route path="dashboard" element={<AdminDashboard/>}/>
+      <Route path="orders" element={<AdminOrders/>}/>
+      <Route path="features" element={<AdminFeatures/>}/>
+      <Route path="products" element={<AdminProducts/>}/>
+      <Route/>
+      <Route/>
+
+        </Route>
+      </Routes>
+     </div>
   )
 }
 
