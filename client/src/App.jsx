@@ -13,13 +13,19 @@ import ShoppingHome from "./pages/shopping-view/Home";
 import ShoppingAccount from "./pages/shopping-view/Account";
 import ShoppingCheckout from "./pages/shopping-view/Checkout";
 import ShoppingListing from "./pages/shopping-view/Listing";
+import checkAuth from "./components/common/check-auth";
 
 function App() {
+  
   return (
     <div className="flex flex-col overflow-hidden bg-white">
       <Routes>
         {/* Authentication routes */}
-        <Route path="/auth" element={<AuthLayout />}>
+        <Route path="/auth" element={
+          <checkAuth > 
+          <AuthLayout />
+          </checkAuth>
+      }>
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
         </Route>
