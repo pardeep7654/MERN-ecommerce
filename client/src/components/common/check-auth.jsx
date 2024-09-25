@@ -1,7 +1,9 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 import React from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 
-const checkAuth = ({isAuthenticated,user,childeren}) => {
+const CheckAuth = ({isAuthenticated,user,children}) => {
     const location=useLocation();
     console.log(location.pathname,isAuthenticated);
     if (location.pathname==="/") {
@@ -10,22 +12,22 @@ const checkAuth = ({isAuthenticated,user,childeren}) => {
         }
         else{
             if(user?.role=="admin"){
-               return <Navigate to="admin/dashboard"/>
+               return <Navigate to="/admin/dashboard"/>
             }
             else{
-                return <Navigate to="shop/home"/>
+                return <Navigate to="/shop/home"/>
             }
         }
     }
     if (!isAuthenticated &&!(location.pathname.includes("/login")||location.pathname.includes("register"))) {
-        return <Navigate to="auth/login"/>
+        return <Navigate to="/auth/login"/>
     }
     if (isAuthenticated && (location.pathname.includes("/login")||location.pathname.includes("/register"))) {
         if (user.role=='admin') {
-            return <Navigate to="admin/dashboard"/>
+            return <Navigate to="/admin/dashboard"/>
         }
         else{
-            return <Navigate to="shop/home"/>
+            return <Navigate to="/shop/home"/>
         }
     }
     if (isAuthenticated && user?.role!="admin"&& location.pathname.includes("admin")) {
@@ -37,9 +39,9 @@ const checkAuth = ({isAuthenticated,user,childeren}) => {
 
   return (
     <>
-    {childeren}
+    {children}
     </>
   )
 }
 
-export default checkAuth
+export default CheckAuth

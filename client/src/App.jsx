@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unknown-property */
+/* eslint-disable no-unused-vars */
 import { Route, Routes } from "react-router-dom";
 import AuthLayout from "./components/auth/Layout";
 import Login from "./pages/auth/Login";
@@ -13,25 +15,34 @@ import ShoppingHome from "./pages/shopping-view/Home";
 import ShoppingAccount from "./pages/shopping-view/Account";
 import ShoppingCheckout from "./pages/shopping-view/Checkout";
 import ShoppingListing from "./pages/shopping-view/Listing";
-import checkAuth from "./components/common/check-auth";
+import CheckAuth from "./components/common/check-auth";
+import UnAuthPage from "./pages/un-auth/Index";
 
 function App() {
-  
+  const isAuthenticated=false;
+  const user={
+    name:"pardeep",
+    role:"admin"
+  };
   return (
     <div className="flex flex-col overflow-hidden bg-white">
       <Routes>
         {/* Authentication routes */}
         <Route path="/auth" element={
-          <checkAuth > 
+          <CheckAuth isAuthenticated={isAuthenticated} user={user}  > 
           <AuthLayout />
-          </checkAuth>
+          </CheckAuth>
       }>
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
         </Route>
 
         {/* Admin routes */}
-        <Route path="/admin" element={<AdminLayout />}>
+        <Route path="/admin" element={
+          <CheckAuth isAuthenticated={isAuthenticated} user={user} > 
+          <AdminLayout />
+          </CheckAuth>
+      }>
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="orders" element={<AdminOrders />} />
           <Route path="features" element={<AdminFeatures />} />
@@ -39,7 +50,11 @@ function App() {
         </Route>
 
         {/* Shopping routes */}
-        <Route path="/shop" element={<ShoppingLayout />}>
+        <Route path="/shop" element={
+          <CheckAuth isAuthenticated={isAuthenticated} user={user}  > 
+          <ShoppingLayout />
+          </CheckAuth>
+      }>
           <Route path="home" element={<ShoppingHome />} />
           <Route path="account" element={<ShoppingAccount />} />
           <Route path="checkout" element={<ShoppingCheckout />} />
@@ -48,6 +63,8 @@ function App() {
 
         {/* Global catch-all for undefined routes */}
         <Route path="*" element={<NotFound />} />
+        
+        <Route path="/unauth-Page" element={<UnAuthPage/>}/>
       </Routes>
     </div>
   );
