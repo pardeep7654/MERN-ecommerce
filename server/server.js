@@ -1,11 +1,17 @@
 import express from "express"
 import mongoose from "mongoose";
 import cors from "cors"
+import { configDotenv } from "dotenv";
 import cookieParser from "cookie-parser";
+import authRouter from "./routers/auth/auth.router.js"
 const app=express();
 const Port=process.env.PORT||4000;
 
-await mongoose.connect("mongodb+srv://pardeep814611:<db_password>@cluster0.1qekz.mongodb.net/")
+configDotenv({
+    path:'./.env'
+})
+
+await mongoose.connect(process.env.DB_URL)
 .then(()=>{
     console.log("DB connected Successfully");
     
@@ -26,10 +32,12 @@ app.use(cors({origin:'http://localhost:5173/',
         'Pragma'
     ]
 }))
+
+app.use("/api/auth",authRouter);
 app.get("/",(req,res)=>{
     res.send("<h1>Hello world</h1>")
 })
-app.listen(Port,()=>{
-    console.log("app is listening on http://localhost:"+Port);
+app.listen(process.env.PORT,()=>{
+    console.log("app is listening on http://localhost:"+process.env.Port);
     
 })

@@ -91,6 +91,7 @@ const CommonForm = ({
         );
         break;
     }
+    return element
   };
   return (
     <>
