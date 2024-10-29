@@ -27,9 +27,12 @@ export const registerUser = async (req, res) => {
     const token = jwt.sign(
       {
         email: newUser.email,
+        role:newUser.role,
+        id:newUser._id,
+        name:newUser.name
       },
       process.env.SECRET_KEY,
-      { expiresIn: "3d" }
+      { expiresIn: "60m" }
     );
 
     res
@@ -39,7 +42,13 @@ export const registerUser = async (req, res) => {
         success: true,
         message: "Registration Successfuly",
         token,
-        newUser,
+        user: {
+          email: newUser.email,
+          phone: newUser.phone,
+          name: newUser.name,
+          role: newUser.role,
+          id: newUser._id,
+        },
       });
   } catch (e) {
     console.log(e);
@@ -63,16 +72,28 @@ export const loginUser = async (req, res) => {
     }
     const checkPassword=await bcrypt.compare(password,checkUser.password);
     if (!checkPassword) {
-        return res.status(400).json({
+        return res.json({
             success:false,
             message:"incorrect Password"
         })
     }
-    const token=jwt.sign({email:checkUser.email},process.env.SECRET_KEY,{expiresIn:"3d"});
+    const token=jwt.sign({
+      email:checkUser.email,
+      role:checkUser.role,
+      id:checkUser._id,
+      name:checkUser.name
+
+    },process.env.SECRET_KEY,{expiresIn:"3d"});
     res.cookie("token",token,{httpOnly:true,secure:false}).json({
         success:true,
         message:"LoggedinSuccessfuly"
-        ,checkUser
+        , user: {
+          email: checkUser.email,
+          phone: checkUser.phone,
+          name: checkUser.name,
+          role: checkUser.role,
+          id: checkUser._id,
+        }, 
     })
   } catch (e) {
     res.status(500).json({
@@ -90,3 +111,22 @@ export const logoutUser = async (req, res) => {
 };
 
 //Auth Middleware
+export const cheackAuth=async(req,res,next)=>{
+  const token=req.cookies.token;
+  if (!token) {
+    return res.status(401).json({
+      success:false,
+      message :"Unauthorized User"
+    })
+  }
+  try {
+    const decoded=jwt.verify(token,process.env.SECRET_KEY);
+    req.user=decoded;
+    next();
+  } catch (error) {
+    res.status(500).json({
+      succes:false,
+      messaage:"Unauthorized User"
+    })
+  }
+}

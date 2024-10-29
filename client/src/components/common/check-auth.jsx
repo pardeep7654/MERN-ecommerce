@@ -1,47 +1,47 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import React from 'react'
-import { Navigate, useLocation } from 'react-router-dom'
+import React from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
 
-const CheckAuth = ({isAuthenticated,user,children}) => {
-    const location=useLocation();
-    console.log(location.pathname,isAuthenticated);
-    if (location.pathname==="/") {
-        if (!isAuthenticated) {
-            return <Navigate to="/auth/login"/>
-        }
-        else{
-            if(user?.role=="admin"){
-               return <Navigate to="/admin/dashboard"/>
-            }
-            else{
-                return <Navigate to="/shop/home"/>
-            }
-        }
-    }
-    if (!isAuthenticated &&!(location.pathname.includes("/login")||location.pathname.includes("register"))) {
-        return <Navigate to="/auth/login"/>
-    }
-    if (isAuthenticated && (location.pathname.includes("/login")||location.pathname.includes("/register"))) {
-        if (user.role=='admin') {
-            return <Navigate to="/admin/dashboard"/>
-        }
-        else{
-            return <Navigate to="/shop/home"/>
-        }
-    }
-    if (isAuthenticated && user?.role!="admin"&& location.pathname.includes("admin")) {
-        return <Navigate to="/unauth-Page"/>
-    }
-    if (isAuthenticated && user?.role==="admin"&&location.pathname.includes("shop")) {
-        return <Navigate to="/unauth-Page"/>
+const CheckAuth = ({ isAuthenticated, user, children }) => {
+    const location = useLocation();
+    const isLoginOrRegister = location.pathname.includes("/login") || location.pathname.includes("/register");
+    // console.log(isAuthenticated,user)
+
+    // If user is not authenticated, redirect to login (unless already on login or register page)
+    if (!isAuthenticated && !isLoginOrRegister) {
+        return <Navigate to="/auth/login" />;
     }
 
-  return (
-    <>
-    {children}
-    </>
-  )
-}
+    // If user is authenticated and tries to access login/register, redirect based on role
+    if (isAuthenticated && isLoginOrRegister) {
+        return user?.role === "admin" 
+            ? <Navigate to="/admin/dashboard" /> 
+            : <Navigate to="/shop/home" />;
+    }
 
-export default CheckAuth
+    // Check role-specific access
+    if (isAuthenticated) {
+        if (user?.role !== "admin" && location.pathname.includes("/admin")) {
+            return <Navigate to="/unauth-Page" />;
+        }
+        if (user?.role === "admin" && location.pathname.includes("/shop")) {
+            return <Navigate to="/unauth-Page" />;
+        }
+    }
+   
+    
+
+    // Main redirection on the homepage
+    if (location.pathname === "/") {
+        return !isAuthenticated 
+            ? <Navigate to="/auth/login" />
+            : user?.role === "admin"
+                ? <Navigate to="/admin/dashboard" />
+                : <Navigate to="/shop/home" />;
+    }
+
+    return <>{children}</>;
+};
+
+export default CheckAuth;

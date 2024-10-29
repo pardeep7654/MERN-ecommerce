@@ -17,13 +17,22 @@ import ShoppingCheckout from "./pages/shopping-view/Checkout";
 import ShoppingListing from "./pages/shopping-view/Listing";
 import CheckAuth from "./components/common/check-auth";
 import UnAuthPage from "./pages/un-auth/Index";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { checkAuth } from "./store/auth-slice";
+import { Skeleton } from "./components/ui/skeleton";
 
 function App() {
-  const isAuthenticated=false;
-  const user={
-    name:"pardeep",
-    role:"admin"
-  };
+  const {user,isAuthenticated,isLoading}=useSelector((state)=>state.auth);
+  const dispatch=useDispatch()
+  // console.log(import.meta.env.VITE_API_URL);
+  useEffect(()=>{
+    dispatch(checkAuth())
+  },[dispatch])
+
+  if (isLoading) {
+    return <Skeleton className="w-[800] bg-black h-[600px]"/>
+  }
   return (
     <div className="flex flex-col overflow-hidden bg-white">
       <Routes>

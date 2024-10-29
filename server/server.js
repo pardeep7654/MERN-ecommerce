@@ -4,6 +4,8 @@ import cors from "cors"
 import { configDotenv } from "dotenv";
 import cookieParser from "cookie-parser";
 import authRouter from "./routers/auth/auth.router.js"
+import bodyParser from "body-parser";
+import productRouter from "./routers/admin/product.router.js"
 const app=express();
 const Port=process.env.PORT||4000;
 
@@ -20,10 +22,15 @@ await mongoose.connect(process.env.DB_URL)
     
 })
 
+app.use(bodyParser.json({limit:'50mb'}));
+app.use(bodyParser.urlencoded({limit:'50mb',extended:true}))
 app.use(cookieParser())
 app.use(express.json())
-app.use(cors({origin:'http://localhost:5173/',
+
+app.use(cors({origin:'http://localhost:5173',
     methods:['GET','POST','DELETE','PUT'],
+    credentials:true,
+    optionsSuccessStatus:200,
     allowedHeaders:[
         'Content-Type',
         'Authorization',
@@ -34,6 +41,11 @@ app.use(cors({origin:'http://localhost:5173/',
 }))
 
 app.use("/api/auth",authRouter);
+
+
+
+//product router
+app.use("/api/admin/products",productRouter)
 app.get("/",(req,res)=>{
     res.send("<h1>Hello world</h1>")
 })

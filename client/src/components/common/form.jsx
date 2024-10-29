@@ -58,7 +58,12 @@ const CommonForm = ({
         break; 
       case 'select':
         element=(
-          <Select >
+          <Select onValueChange={(value)=>{
+            setFormData({
+              ...formData,
+              [getControlItem.name]:value
+            })
+          }} >
               <SelectTrigger className="w-full">
                 <SelectValue placeholder={getControlItem.placeholder}/>
               </SelectTrigger>
